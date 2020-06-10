@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>786</title>
+	<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<link rel="stylesheet" type="text/css" href="css/font.css" />
+
+	<style>
+		@-ms-viewport { width: device-width; }
+		@media only screen and (min-device-width: 800px) { html { overflow:hidden; } }
+		html { height:100%; }
+		body { height:100%; overflow:hidden; margin:0; padding:0; font-family:Iranian_Sans,tahoma, Helvetica, sans-serif; font-size:16px; color:#FFFFFF; background-color:#000000;text-align:center; }
+		#back_to_home{max-width:115px;width:27%;position: absolute;top: 0px;left: 0px;cursor: pointer;}
+		#back_to_home img{width:100%;}
+	</style>
+	<script src="js/jquery-2.2.2.min.js"></script>
+	<script src="phonegap.js"></script>
+	<script src="js/jquery.slides.min.js"></script>
+	
+	<script>
+		function getParameterByName(name) {
+			name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+			var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+				results = regex.exec(location.search);
+			return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+		}
+		function init() {		
+			console.log('SMGROUP ::::::::::::::::::::::::::::::::::::    start init()');
+			document.addEventListener("deviceready", onDeviceReady, false);
+			//alert("target:" + getParameterByName("target"));
+		}
+		function onDeviceReady() {
+/*
+var expireDateStr = "03/25/2020";//mm/dd/yyyy
+var expireDateArr = expireDateStr.split("/");
+var expireDate = new Date(parseInt(expireDateArr[2]), parseInt(expireDateArr[0]-1), parseInt(expireDateArr[1]));
+var todayDate = new Date();
+if (todayDate > expireDate) {
+	alert("the application is expired");
+	return true;
+};
+*/
+			//alert(screen.orientation);
+			//alert(screen.orientation);
+			setTimeout(function(){
+				//document.getElementById("gyro").innerHTML = "786";
+				//document.getElementById("gyro").innerHTML = "786" + "<br/>" + document.getElementById("gyro").innerHTML;
+
+				navigator.splashscreen.hide();
+				
+				if(window.localStorage.getItem('download_done') == null){
+					var target = "download.html";
+					window.location.href=target;
+				}else{
+					//alert(cordova.plugins.backgroundMode.isActive());
+					//cordova.plugins.backgroundMode.disable();
+					//cordova.plugins.backgroundMode.setEnabled(false);
+					//alert(cordova.plugins.backgroundMode.isActive());
+					var target = window.localStorage.getItem('download_address') + "/" + "vtour-locale.html";
+					window.location.href=target;
+				}
+
+/*
+if(window.localStorage.getItem('download_address') == null){
+	//window.requestFileSystem(LocalFileSystem.TEMPORARY, 0, 
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, 
+		function(fs) {
+			window.localStorage.setItem('download_address',fs.root.toURL());
+			alert(window.localStorage.getItem('download_address'));
+		}, function(e) {
+			alert('failed to get fs');
+			alert(JSON.stringify(e));
+		}
+	);
+}
+else
+	alert(window.localStorage.getItem('download_address'));
+*/
+/*
+var fileName  = "www.zip";
+var uriString = "http://demo.panotools.eu/temp/www.zip";
+window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+	window.localStorage.setItem('download_address',fileSystem.root.toURL());
+	//alert(window.localStorage.getItem('download_address'));
+	
+	fileSystem.root.getFile(fileName, { create: true }, function (newFile) {
+		downloadFile(uriString, newFile);
+	});
+});
+
+var stopDownload;
+stopDownload = function () {
+	downloadPromise && downloadPromise.cancel();
+}
+var getFileInfo;
+getFileInfo = function () {
+	window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
+		fileSystem.root.getFile(fileName, { create: true }, function (fileEntry) {
+			fileEntry.file(function (meta) {
+				document.getElementById('lblFileInfo').innerHTML =
+					"Modified: " + meta.lastModifiedDate + "<br/>" +
+					"size: " + meta.size;
+			});
+		}, function(error) {
+			document.getElementById('lblFileInfo').innerHTML = "error: " + error;
+		});
+	});
+}
+var downloadFile;
+downloadFile = function(uriString, targetFile) {
+
+	var lblProgress = document.getElementById('lblProgress');
+
+	var complete = function() {
+		lblProgress.innerHTML = 'Done';
+										zip.unzip( window.localStorage.getItem('download_address') + '/www.zip', window.localStorage.getItem('download_address') + '/', function(d) {
+											alert(d);
+											var target = window.localStorage.getItem('download_address') + "/" + "vtour-locale.html";
+											alert(target);
+											window.location.href=target;
+										}, function(d) {
+										   document.getElementById('progressbar').innerHTML = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+										});
+	};
+	var error = function (err) {
+		console.log('Error: ' + err);
+		lblProgress.innerHTML = 'Error: ' + err;
+	};
+	var progress = function(progress) {
+		lblProgress.innerHTML = (100 * progress.bytesReceived / progress.totalBytesToReceive) + '%';
+	};
+
+	try {
+
+		var downloader = new BackgroundTransfer.BackgroundDownloader();
+		// Create a new download operation.
+		var download = downloader.createDownload(uriString, targetFile);
+		// Start the download and persist the promise to be able to cancel the download.
+		downloadPromise = download.startAsync().then(complete, error, progress);
+
+	} catch(err) {
+		lblProgress.innerHTML = 'Error: ' + err;
+		console.log('Error: ' + err);
+	}
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+			}, 2500);
+			/*
+			setTimeout(function(){
+				navigator.splashscreen.hide();
+			}, 2500);
+			*/
+			setTimeout(function(){
+				
+				window.brightness = cordova.require("cordova.plugin.Brightness.Brightness");
+				setBrightness(1);
+				brightness.setKeepScreenOn(true);
+				/*
+				var orientation = getParameterByName("orientation");
+				var target		= getParameterByName("target");
+				if(target != "")
+				{
+					if(orientation == "portrait")
+						screen.lockOrientation('portrait');
+					else(orientation == "landscape")
+						screen.lockOrientation('landscape');
+					window.location.href=target;
+				}
+				else
+				{
+					screen.lockOrientation('portrait');
+					window.location.href='index.html';
+				}
+				*/
+			}, 500);
+			function setBrightness(value) {
+				// value should be float in range from 0 to 1.
+				brightness.setBrightness(value, win, fail);
+			}
+			function getBrightness() {
+				// win([-1,0-1]) float 0-1 is a brightness level, -1 represents a system default
+				brightness.getBrightness( win, fail);
+			}
+			function win(status) {
+				//alert('Message: ' + status);
+			}
+			function fail(status) {
+				//alert('Error: ' + status);
+			}
+		}
+		$(document).ready(function() {
+
+		});
+		
+
+	</script>
+</head>
+<body onload="init();" style='direction:rtl;text-align: center; font-family: sans-serif; font-size: 16px;font-weight:bold;' >
+	<div id="pre_load" ></div>
+	<div id="center">
+		<div id="gyro"></div>
+		<!--
+		<p id="lblProgress">0%</p>
+		<p id="lblFileInfo"></p>
+		<p id="progressbar">---</p>
+		-->
+	</div>	
+</body>
+</html>

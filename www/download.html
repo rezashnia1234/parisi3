@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, viewport-fit=cover">
+    <title>786</title>
+    <link rel="stylesheet" type="text/css" href="css/reset.css">
+    <link rel="stylesheet" type="text/css" href="css/progress.bar.css">
+
+    <link rel="stylesheet" type="text/css" href="css/template.css">
+	<style>
+	.progress-bar #descripion .first::before {display: none;}
+.progress-bar #abort_box {
+    width: 100%;
+    text-align: center;
+    position: relative;
+    bottom: -2vh;
+    left: 0;
+    right: 0;
+}
+.progress-bar #abort {
+	color: #fff;
+    background-color: rgba(63, 77, 85, 0.5);
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 2px;
+    border: none;
+    font-size: 3.5vh;
+    margin-top: 0;
+    padding: 1vh 3vh;
+    height: auto;
+    width: auto;
+}
+.progress-bar #abort {
+    cursor: pointer;
+}
+.smm_ziarat_body .bg {
+    background-image: url(images/download-bg.gif);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 0;
+}
+	</style>
+	<script src="js/jquery-2.2.2.min.js"></script>
+	<script src="js/console.log.js"></script>
+    <script src="cordova.js"></script>
+    <script src="js/jquery.md5.js"></script>
+    <script src="js/back_btn.js"></script>
+	<script>
+		function init(){
+			console.log('SMGROUP ::::::::::::::::::::::::::::::::::::    start init()');
+			document.addEventListener("deviceready", onDeviceReady, false);
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////////////////////////////////////
+		
+		function onDeviceReady() {
+			setTimeout(function(){
+				window.brightness = cordova.require("cordova.plugin.Brightness.Brightness");
+				brightness.setKeepScreenOn(true);
+			}, 1000);
+			
+			//FastClick.attach(document.body);
+			if ( device.platform == 'Android' ){//Android,iOS,win7=WinCE,win8=Win32NT
+				document.addEventListener("backbutton", goto_menu, false);
+			}
+			
+			
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+/////START DOWNLOAD//////////////////////////////////////////////////////////////////////
+			if(navigator.connection.type)
+				networkState = navigator.connection.type;
+			else
+				networkState = navigator.connection.effectiveType;
+			if(networkState == Connection.NONE) {
+				navigator.notification.alert(
+					'You need an Internet connection to use this software',  // message
+					alertDismissed,         // callback
+					'Warning',            // title
+					'Ok'                  // buttonName
+				);
+				function alertDismissed(){};
+			}
+			else
+			{
+				//download_file('https://panotools.eu/temp/www2.zip','panos');
+				var fileName  = "www.zip";
+				var uriString = "https://panotools.eu/temp/www2.zip";
+				//var uriString = "http://192.168.0.25/www.zip";
+				window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function(fileSystem) {
+					window.localStorage.setItem('download_address',fileSystem.root.toURL());
+					//alert(window.localStorage.getItem('download_address'));
+					
+					fileSystem.root.getFile(fileName, { create: true }, function (newFile) {
+						downloadFile(uriString, newFile);
+					});
+				});
+
+				var stopDownload;
+				stopDownload = function () {
+					downloadPromise && downloadPromise.cancel();
+				}
+				/*
+				var getFileInfo;
+				getFileInfo = function () {
+					window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, function (fileSystem) {
+						fileSystem.root.getFile(fileName, { create: true }, function (fileEntry) {
+							fileEntry.file(function (meta) {
+								document.getElementById('lblFileInfo').innerHTML =
+									"Modified: " + meta.lastModifiedDate + "<br/>" +
+									"size: " + meta.size;
+							});
+						}, function(error) {
+							document.getElementById('lblFileInfo').innerHTML = "error: " + error;
+						});
+					});
+				}
+				*/
+				var downloadFile;
+				downloadFile = function(uriString, targetFile) {
+
+					var complete = function() {
+						$('#text').html("Extracting...");
+						var StatusCallback = function(status){
+							if(status == 0){
+								/*
+								alert("Extracting is finished");
+								*/
+								//cordova.plugins.backgroundMode.disable();
+								//cordova.plugins.backgroundMode.setEnabled(false);
+
+								window.localStorage.setItem('download_done','yes');
+								var target = window.localStorage.getItem('download_address') + "/" + "vtour-locale.html";
+								//alert(target);
+								window.location.href=target;
+							}else if(status == -1){
+								$('#text').html("Please re-try");
+							}
+						};
+						var ProgressCallback = function(progressEvent){
+							perc = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+							//$('#text').html(perc + "%");
+							$('#text').html("Extracting " + perc + "%");
+							$('.progress-bar-percent').css('width',perc + "%");
+						};
+						zip.unzip( window.localStorage.getItem('download_address') + '/www.zip', window.localStorage.getItem('download_address') + '/', StatusCallback, ProgressCallback);
+					};
+					var error = function (err) {
+						console.log('Error: ' + err);
+						$("#error").html('Error: ' + err);
+					};
+					var progress = function(progress) {
+						perc = Math.ceil(100 * progress.bytesReceived / progress.totalBytesToReceive);
+						if(isNaN(perc))
+						{
+							$('#text').html("Estimating Remaining Tasks");
+						}
+						else
+						{
+							$('#text').html(perc + "%");
+							$('.progress-bar-percent').css('width',perc + "%");
+						}
+						/*
+						$('#text').html(perc + "%");
+						$('.progress-bar-percent').css('width',perc + "%");
+						*/
+					};
+
+					try {
+
+						var downloader = new BackgroundTransfer.BackgroundDownloader();
+						// Create a new download operation.
+						var download = downloader.createDownload(uriString, targetFile,'Ballenesque 360/vr','Ballenesque 360/vr');
+						// Start the download and persist the promise to be able to cancel the download.
+						downloadPromise = download.startAsync().then(complete, error, progress);
+
+					} catch(err) {
+						$("#error").html('Error: ' + err);
+						console.log('Error: ' + err);
+					}
+				}
+			}
+		}
+/*
+	function download_file(URL,Folder) {//, type:'merge'
+		var sync = ContentSync.sync({ src: URL, id: Folder, type:'merge', timeout:144000000 });
+		sync.on('progress', function(data) {
+			// data.progress
+			var perc = data.progress;
+			if(perc<50)
+				perc = (perc * 75) / 50
+			else
+			{
+				perc = perc - 50
+				perc = (perc * 25) / 50
+				perc = perc + 75
+			}
+			//$('#status').html(perc + "% --" + data.status);
+			$('#status').html(perc + "%");
+			$('.progress-bar-percent').css('width',perc + "%");
+		});
+		sync.on('complete', function(data) {
+			// data.localPath
+			window.localStorage.setItem('pano_localPath',data.localPath);
+			//alert("complete : " + data.localPath);
+			//alert("complete cached : " + data.cached);
+			navigator.notification.alert(
+				'The download process has been successfully completed.',  // message
+				goto_vr,         // callback
+				'Warning',            // title
+				'Ok'                  // buttonName
+			);
+		});
+
+		sync.on('error', function(e) {
+			// e.message
+			console.log(e);
+			console.log(e.message);
+			alert("error : " + e.message);
+		});
+
+		sync.on('cancel', function() {
+			// triggered if event is cancelled
+			//alert("cancel");
+		});
+		$("#abort").click( function(i) {
+			//sync.abort();
+			//$('.progress-bar-parent').find('span').css('width','2%');
+			//$('.progress-bar-percent').css('width',"");
+			//$('.progress-bar-parent').css("display","none");
+			brightness.setKeepScreenOn(false);
+			navigator.notification.alert(
+				'Cancel?',  // message
+				goto_menu,         // callback
+				'Warning',            // title
+				'Ok'                  // buttonName
+			);
+		});
+
+	}
+*/
+
+/////END DOWNLOAD////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////
+			
+			
+			
+			
+			
+
+		$(window).load(function() {	
+			setTimeout(function(){
+				$(".mypreload").html("");
+			}, 800);
+		});
+
+	</script>	
+
+		
+		
+		
+<style>
+
+
+</style>	
+</head>
+<body onload="init();" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" id="body" class="smm_ziarat_body" style="background-color: #000000;">
+	<div class="bg" ></div>
+	<div id="ajax" class="mypreload">
+		<div style="z-index: 1000; border: medium none; margin: 0px; padding: 0px; width: 100%; height: 100%; top: 0px; left: 0px; background-color: #000000; opacity: 1; cursor: default; position: fixed;overflow:visible;" class="blockUI blockOverlay"></div>
+		<div style="z-index: 1011; position: fixed; padding: 0px; margin: 0px; width: 100%; top: 28%; left: 0%; text-align: center;border: medium none;overflow:visible;" class="blockUI blockMsg blockPage"><img src="images/preloader.gif"></div>
+		<div style="z-index: 1012; position: fixed; padding: 0px; margin: 0px; width: 100%; top: 50%; left: 0%; text-align: center;border: medium none;overflow:visible;height:500px;" class="blockUI blockMsg blockPage"><img src="images/loading.png" width="70%"></div>
+	</div>
+	<div class="bg retina" ></div>
+	<div class="progress-bar-parent" style="width:33%;height: 37vh;position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;text-align: center;">
+		<img src="images/download-bg_text.png" style="width:100%;" />
+		<div class="progress-bar green glow" style="position: relative;width: 100%;height: 4vh;border-radius: 1px;top: 4px;">
+			<div id="status" style="display:none;" ></div>
+			<span class="progress-bar-percent" style="width: 0%;border-radius: 1px;top: -1px;position: relative;"></span>
+			<div style=" text-align: center; color: #828282;font-weight: normal; " >
+				<div id="text" style="font-size: 12px"></div>
+				<div id="error" style="color: #ff6666;font-size: 12px"></div>
+			</div>
+			<div id="descripion" style="display:none;">
+				<div class="first">Download</div> <div class="hajm">315 mb</div>
+				<br/>
+				<!-- <div id="error"></div> -->
+			</div>
+			<!-- <div id="abort_box"><input type="button" id="abort" value="Cancel" /></div> -->
+		</div>
+	</div>
+
+</body>
+</html>
