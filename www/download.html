@@ -44,6 +44,22 @@
     position: absolute;
     z-index: 0;
 }
+video#menu-video {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.progress-bar {
+    background-color: #ffffff;
+	overflow: hidden;
+}
+
 	</style>
 	<script src="js/jquery-2.2.2.min.js"></script>
 	<script src="js/console.log.js"></script>
@@ -182,7 +198,7 @@
 
 						var downloader = new BackgroundTransfer.BackgroundDownloader();
 						// Create a new download operation.
-						var download = downloader.createDownload(uriString, targetFile,'Ballenesque 360/vr','Ballenesque 360/vr');
+						var download = downloader.createDownload(uriString, targetFile,'No Exit 360/VR','No Exit 360/VR');
 						// Start the download and persist the promise to be able to cancel the download.
 						downloadPromise = download.startAsync().then(complete, error, progress);
 
@@ -285,17 +301,21 @@
 		<div style="z-index: 1012; position: fixed; padding: 0px; margin: 0px; width: 100%; top: 50%; left: 0%; text-align: center;border: medium none;overflow:visible;height:500px;" class="blockUI blockMsg blockPage"><img src="images/loading.png" width="70%"></div>
 	</div>
 	<div class="bg retina" ></div>
+	<video autoplay muted loop id="menu-video" webkit-playsinline playsinline>
+		<source src="images/real download video screen.mp4" type="video/mp4">
+	</video>
 	<div class="progress-bar-parent" style="width:33%;height: 37vh;position: absolute;left: 0;top: 0;right: 0;bottom: 0;margin: auto;text-align: center;">
 		<img src="images/download-bg_text.png" style="width:100%;" />
+		
 		<div class="progress-bar green glow" style="position: relative;width: 100%;height: 4vh;border-radius: 1px;top: 4px;">
 			<div id="status" style="display:none;" ></div>
-			<span class="progress-bar-percent" style="width: 0%;border-radius: 1px;top: -1px;position: relative;"></span>
+			<span class="progress-bar-percent" style="width: 0%;border-radius: 1px;top: -5px;position: relative;height: 200%;"></span>
 			<div style=" text-align: center; color: #828282;font-weight: normal; " >
 				<div id="text" style="font-size: 12px"></div>
 				<div id="error" style="color: #ff6666;font-size: 12px"></div>
 			</div>
 			<div id="descripion" style="display:none;">
-				<div class="first">Download</div> <div class="hajm">1.56 GB</div>
+				<div class="first">Download</div> <div class="hajm">1.70 GB</div>
 				<br/>
 				<!-- <div id="error"></div> -->
 			</div>
